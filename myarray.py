@@ -74,7 +74,7 @@ class myArray2D:
     # Clears the array by setting every element to the given value
     def clear( self, value ):
         for row in range( self.numRows() ):
-            row.clear( value )
+            self._theRows[row].clear( value )
 
     # Gets the contents of the element at position [i, j]
     def __getitem__( self, ndxTuple ):
@@ -97,6 +97,75 @@ class myArray2D:
             "Array subscripts out of range."
         the1dArray = self._theRows[row]
         the1dArray[col] = value
+
+# Implementation of the MultiArray ADT using a 1-D array.
+class MultiArray:
+    # Creates a multi-dimensional array.
+    def __init__( self, *dimensions ):
+        assert len(dimensions) > 1, "The array must have 2 or more dimensions."
+        # The variable argument tuple contains the dim sizes.
+        self._dims = dimensions
+        # Compute the total number of elements in the array.
+        size = 1
+        for d in dimensions:
+            assert d > 0, " Dimensions must be > 0."
+            size *= d
+
+        # Create the 1-D array to store the elements.
+        self._elements = myArray( size )
+        # Create the 1-D array to store the equation factors
+        self._factors = myArray( len(dimensions) )
+        self._computeFactors()
+    
+    # Returns the number of dimensions in the array.
+    def numDims( self ):
+        return len(self._dims)
+
+    # Returns the length of the given dimension.
+    def length( self, dim ):
+        assert dim >= 1 and dim <= len(self._dims), \
+            "Dimension component out of range."
+        return self._dims[dim-1]
+    
+    # Clears the array by setting all elements to the given value.
+    def clear( self, value ):
+        self._elements.clear( value )
+
+    # Returns the contents of element (i_1, i_2, ..., i_n).
+    def __getitem__( self, ndxTuple ):
+        assert len(ndxTuple) == self.numDims(), "Invalid # of array subscripts."
+        index = self._computeIndex(ndxTuple)
+        assert index is not None, "Array subscript out of range."
+        return self._elements[index]
+
+    # Sets the contents of element (i_1, i_2, ..., i_n).
+    def __setitem__( self, ndxTuple, value ):
+        assert len(ndxTuple) == self.numDims(),  "Invalid # of array subscripts."
+        index = self._computeIndex( ndxTuple )
+        assert index is not None, "Array subscript out of range."
+        self._elements[index] = value
+
+    # Computes the 1-D array offset for element (i_1, i_2, ... i_n)
+    # using the equation i_1*f_1 + i_2*f_2 + ... + i_n*f_n
+    def _computeIndex( self, idx ):
+        offset = 0
+        for j in range( len(idx) ):
+            # Make sure the index components are within the legal range.
+            if idx[j] < 0 | idx[j] >= self.dims[j] : 
+                return None
+            else:
+                offset += idx[j] * self._factors[j]
+        return offset
+
+    # Computes the factor values used in the index equation.
+    def _computeFactors( self ):
+        for j in range( self.numDims()-1 ):
+            self._factors[j] = 1
+            for k in range( j+1, self.numDims() ): 
+                self._factors[j] *= self._dims[k]
+        self._factors[self.numDims()-1] = 1
+
+
 
 if __name__ == '__main__':
     #import random
@@ -128,3 +197,20 @@ if __name__ == '__main__':
         for j in range( numExams ):
             print examGrades[i, j],
         print ""
+
+    
+    array3D_A = MultiArray( 3, 5 , 4)
+    array3D_A.clear(3)
+    
+    #for i in range(3):
+    #    for j in range(5):
+    #        array2D_A[i, j] = 3
+    
+    for i in range(3):
+        for j in range(5):
+            for k in range(4):
+                print array3D_A[i, j, k],
+            print ""
+        print '\n'
+
+    
