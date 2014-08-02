@@ -165,8 +165,6 @@ class MultiArray:
                 self._factors[j] *= self._dims[k]
         self._factors[self.numDims()-1] = 1
 
-
-
 if __name__ == '__main__':
     #import random
 
@@ -198,7 +196,7 @@ if __name__ == '__main__':
             print examGrades[i, j],
         print ""
 
-    
+   
     array3D_A = MultiArray( 3, 5 , 4)
     array3D_A.clear(3)
     
@@ -212,5 +210,3 @@ if __name__ == '__main__':
                 print array3D_A[i, j, k],
             print ""
         print '\n'
-
-    
