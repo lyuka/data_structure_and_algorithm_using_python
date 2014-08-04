@@ -10,24 +10,31 @@ class mySet:
 
     # Determines if an element is in the set.
     def __contains__( self, element ):
-        return element in self._theElements
+        ndx = self._findPosition( element )
+        return ndx < len( self ) and self._theElements[ndx] == element
 
     # Adds a new unique element to the set.
     def add( self, element ):
         if element not in self:
-            self._theElements.append( element )
+            ndx = self._findPosition( element )
+            self._theElements.insert( ndx, element )
 
     # Removes an element from the set.
     def remove( self, element ):
         assert element in self, "The element must be in the set."
-        self._theElements.remove( item )
+        ndx = self._findPosition( element )
+        self._theElements.pop( ndx )
 
     # Determins if two sets are equal.
     def __eq__( self, setB):
         if len( self ) != len( setB ):
             return False
         else:
-            return self.isSubsetOf( setB )
+            #return self.isSubsetOf( setB )
+            for i in range( len(self ) ):
+                if self._theElements[i] != setB._theElements[i]:
+                    return False
+            return True
 
     # Determins if this set is a subset of setB.
     def isSubsetOf( self, setB ):
@@ -39,10 +46,38 @@ class mySet:
     # Creates a new set from the union of this set and setB
     def union( self, setB ):
         newSet = mySet()
-        newSet._theElements.extend( self._theElements )
-        for element in setB:
-            if element not in self : 
-                newSet._theElements.append( element )
+        #newSet._theElements.extend( self._theElements )
+        #for element in setB:
+        #    if element not in self : 
+        #        newSet._theElements.append( element )
+        #return newSet
+        a = 0
+        b = 0
+        # Merge the two lists together until one is empty
+        while a < len( self ) and b < len( setB ):
+            valueA = self._theElements[a]
+            valueB = setB._theElements[b]
+            if valueA < valueB:
+                newSet._theElements.append( valueA )
+                a += 1
+            elif valueA > valueB:
+                newSet._theElements.append( valueB )
+                b += 1
+            else:
+                newSet._theElements.append( valueA )
+                a += 1
+                b += 1
+
+        # If listA contains more elements
+        while a < len( self ):
+            newSet._theElements.append( self._theElements[a] )
+            a += 1
+
+        # Or if listB contains more elements
+        while b < len( setB ):
+            newSet._theElements.append( setB._theElements[b] )
+            b += 1
+
         return newSet
 
     # Creates a new set from the intersection: self set and setB.
@@ -65,6 +100,20 @@ class mySet:
     def __iter__( self ):
         return _SetIterator( self._theElements )
 
+    # Finds the position of the element within the ordered list.
+    def _findPosition( self, element ):
+        low = 0
+        high = len( self._theElements ) - 1
+        while low <= high:
+            mid = ( high + low ) // 2
+            if self._theElements[ mid ] == element:
+                return mid
+            elif element < self._theElements[ mid ]:
+                high = mid - 1
+            else:
+                low = mid + 1
+        return low
+                
 # An iterator for the Set ADT.
 class _SetIterator:
     def __init__( self, theSet ):
