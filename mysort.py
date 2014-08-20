@@ -198,6 +198,38 @@ def partitionSeq( theSeq, first, last ):
         theSeq[right] = pivot
     return right
 
+# =======================radix sort====================================
+# Sorts a sequence of positive integers using the radix sort algorithm.
+def radixSort( intList, numDigits ):
+    from llistqueue import Queue
+    from myarray import myArray
+
+    # Create an array of queues to represent the bins.
+    binArray = myArray( 10 )
+    for k in range( 10 ):
+        binArray[k] = Queue()
+
+    column = 1
+    # Iterate over the number of digits in the largest value.
+    for d in range( numDigits ):
+        # Distribute the keys across the 10 bins.
+        for key in intList:
+            digit = (key // column) % 10
+            binArray[digit].enqueue( key )
+
+        # Gather the keys from the bins and place them back in intList.
+        i = 0
+        for bin in binArray:
+            while not bin.isEmpty():
+                intList[i] = bin.dequeue()
+                i += 1
+
+        # Advance to the next column value.
+        column *= 10
+
+        for ele in intList:
+            print ele,
+        print ''
 
 # =======================module test===================================
 if __name__ == '__main__':
@@ -233,3 +265,7 @@ if __name__ == '__main__':
     for ele in theSeq:
         print ele,
     print ''
+
+    theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
+    print 'Radix Sort: '
+    radixSort( theSeq, 2 )
