@@ -198,6 +198,69 @@ def partitionSeq( theSeq, first, last ):
         theSeq[right] = pivot
     return right
 
+# =======================heap sort 01==================================
+def simpleHeapSort( theSeq ):
+    from arrayheap import MaxHeap
+    
+    # Create an array-based max-heap.
+    n = len( theSeq )
+    heap = MaxHeap( n )
+
+    # Build a max-heap from the list of values.
+    for item in theSeq:
+        heap.add( item )
+
+    # Extract each value from the heap and store them back into the list.
+    for i in range(n)[::-1]:
+        theSeq[i] = heap.extract()
+
+# =======================heap sort 02==================================
+# heap sort in place
+def heapSort( theSeq ):
+    n = len( theSeq )
+    # Build a max-heap within the same array.
+    for i in range( n ):
+        _siftUp( theSeq, i )
+        for i in range( n ):
+            print theSeq[i],
+        print ''
+
+    # Extract each value and rebuild the heap.
+    for j in range( n-1, 0, -1 ):
+        tmp = theSeq[ j ]
+        theSeq[j] = theSeq[0]
+        theSeq[0] = tmp
+        _siftDown( theSeq, j-1, 0 )
+        for i in range( n ):
+            print theSeq[i],
+        print ''
+
+# help function used in heapsort
+def _siftUp( theSeq, ndx ):
+    if ndx > 0:
+        parent = ( ndx - 1 ) // 2
+        if theSeq[ndx] > theSeq[parent]:
+            tmp = theSeq[ndx]
+            theSeq[ndx] = theSeq[parent]
+            theSeq[parent] = tmp
+            _siftUp( theSeq, parent )
+
+# help function used in heapsort
+def _siftDown( theSeq, end_ndx, begin_ndx ):
+    left = 2 * begin_ndx + 1
+    right = 2 * begin_ndx + 2
+    largest = begin_ndx
+    if left <= end_ndx and theSeq[left] >= theSeq[largest]:
+        largest = left
+    if right <= end_ndx and theSeq[right] >= theSeq[largest]:
+        largest = right
+    if largest != begin_ndx:
+        tmp = theSeq[begin_ndx]
+        theSeq[begin_ndx] = theSeq[largest]
+        theSeq[largest] = tmp
+        _siftDown( theSeq, end_ndx, largest )
+
+
 # =======================radix sort====================================
 # Sorts a sequence of positive integers using the radix sort algorithm.
 def radixSort( intList, numDigits ):
@@ -233,39 +296,56 @@ def radixSort( intList, numDigits ):
 
 # =======================module test===================================
 if __name__ == '__main__':
-    theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
-    print 'Bubble Sort: '
-    bubbleSort(theSeq)
+    #theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
+    #print 'Bubble Sort: '
+    #bubbleSort(theSeq)
     
-    theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
-    print 'Selection Sort: '
-    selectionSort(theSeq)
+    #theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
+    #print 'Selection Sort: '
+    #selectionSort(theSeq)
+
+    #theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
+    #print 'Insertion Sort: '
+    #insertionSort(theSeq)
+
+    #theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
+    #print 'Merge Sort: '
+    #sortedSeq = MergeSort( theSeq )
+    #for ele in sortedSeq:
+    #    print ele,
+    #print ''
+
+    #theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
+    #print 'Merge Sort ( using virtual subsequence )'
+    #mergeVirtualSort( theSeq )
+    #for ele in theSeq:
+    #    print ele,
+    #print ''
+
+    #theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
+    #print 'Quick Sort: '
+    #quickSort( theSeq )
+    #for ele in theSeq:
+    #    print ele,
+    #print ''
+
+    #theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
+    #print 'Heap Sort: '
+    #simpleHeapSort( theSeq )
+    #for ele in theSeq:
+    #    print ele,
+    #print ''
 
     theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
-    print 'Insertion Sort: '
-    insertionSort(theSeq)
-
-    theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
-    print 'Merge Sort: '
-    sortedSeq = MergeSort( theSeq )
-    for ele in sortedSeq:
-        print ele,
-    print ''
-
-    theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
-    print 'Merge Sort ( using virtual subsequence )'
-    mergeVirtualSort( theSeq )
+    print 'Heap Sort in place: '
+    heapSort( theSeq )
     for ele in theSeq:
         print ele,
     print ''
+    
+    #theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
+    #print 'Radix Sort: '
+    #radixSort( theSeq, 2 )
 
-    theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
-    print 'Quick Sort: '
-    quickSort( theSeq )
-    for ele in theSeq:
-        print ele,
-    print ''
-
-    theSeq = [10, 51, 2, 18, 4, 31, 13, 5, 23, 64, 29]
-    print 'Radix Sort: '
-    radixSort( theSeq, 2 )
+    
+    
